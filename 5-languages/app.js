@@ -1,10 +1,6 @@
 let req = prompt(`Укажите язык: 
 (пример: en, ru, de)`);
 
-if (req.length > 2) {
-  req = 'error';
-}
-
 switch (req) {
   case 'error':
     alert('Enter two letter country code');
