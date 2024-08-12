@@ -1,52 +1,45 @@
 const ToDOList = {
-  tasks: [
-    {
-      id: 1,
-      title: 'Помыть посуду',
-      priority: 1,
-    },
-  ],
+  // счетчик id, а также метод получения следующего id
+  // _lastId: 0,
 
-  // Ищем задачу по id
-  _findTask: function (id) {
-    return this.tasks.find((el) => el.id == id);
+  getNextId() {
+    if (!this._lastId) {
+      this._lastId = 0;
+    }
+    return this._lastId++;
   },
 
-  addTask: function (task) {
-    // Обновляю таски если передана задача с id и выхожу из функции, если id не совпали ну чтож(
-    if (task.id) {
-      this.tasks = this.tasks.map((el) => {
-        if (el.id === task.id) {
-          return { id: task.id, title: task.title, priority: task.priority };
-        }
-        return el;
-      });
+  // Ищем задачу по id
+  _findTask(id) {
+    return this.tasks.find((el) => el.id === id);
+  },
+
+  addTask(task) {
+    // Проверяю на наличие свойства tasks, атрибута title, добавил счетчик id
+    // А так-же сохраняю в новый объект не модифицируя входящий, добавил вовзрат this
+    if (!this.tasks) {
+      this.tasks = [];
+    }
+
+    if (!task.title) {
+      console.log('Задача должна содержать название');
       return;
     }
 
-    // Создаю id для новой задачи
-    const id =
-      this.tasks.reduce((acc, cur) => {
-        if (cur.id > acc) {
-          return (acc = cur.id);
-        }
-        return acc;
-      }, 0) + 1;
+    const id = this.getNextId();
 
-    // Если не указан приоритет ставлю по умолчанию 1
-    const priority = task.priority ?? 1;
-
-    // Добавляю новую задачу
-    this.tasks.push({
-      ...task,
+    const newTask = {
       id,
-      priority,
-    });
+      title: task.title,
+      priority: task.priority ?? 1,
+    };
 
-    console.log('Новая задача успешно создана');
+    this.tasks.push(newTask);
+
+    return this;
   },
 
-  deleteTask: function (id) {
+  deleteTask(id) {
     // Провожу проверку на предмет наличия задачи, если не найдена то сообщаем об этом и выходим
     if (!this._findTask(id)) {
       console.log(`Ваш план провалился, задача с id = ${id} не найдена`);
@@ -54,35 +47,11 @@ const ToDOList = {
     }
 
     this.tasks = this.tasks.filter((el) => el.id != id);
-    console.log(`В результате ваших действий нам пришлось удалить задачу`);
+    return this;
   },
 
-  // updateNameOrPriority: function ({ ...args }) {
-  //   const { id, title, priority } = args;
-  //   const task = this._findTask(id);
-
-  //   //Выполняю проверки на предмент наличия задачи, и переданных в функцию аргументов
-  //   if (!task) {
-  //     console.log(`Для обновления задачи укажите существующий id`);
-  //     return;
-  //   }
-  //   if (!title && !priority) {
-  //     console.log('На что вы вообще расчитывали?');
-  //     return;
-  //   }
-
-  //   // Получаю аргументы новой задачи
-  //   const keysProps = Object.keys(args);
-
-  //   // Ну что бы обойтись без ифов и свичей, разворачиваю новую задачу в об.ект, дальше беру ключ и добавляю значение
-  //   for (let i of keysProps) {
-  //     task = { ...task, [i]: args[i] };
-  //   }
-  //   this.addTask(task);
-  // },
-
   // Попытка упростить функцию
-  updateNameOrPriority2: function ({ id, title, priority }) {
+  updateNameOrPriority({ id, title, priority }) {
     const task = this._findTask(id);
 
     if (!task) {
@@ -94,10 +63,10 @@ const ToDOList = {
     if (title !== undefined) task.title = title;
     if (priority !== undefined) task.priority = priority;
 
-    console.log('Задача обновлена');
+    return this;
   },
 
-  sortTasks: function (order = 'asc') {
+  sortTasks(order = 'asc') {
     const sortedTasks = [...this.tasks];
     sortedTasks.sort((a, b) =>
       order === 'desc' ? b.priority - a.priority : a.priority - b.priority,
@@ -109,10 +78,9 @@ const ToDOList = {
 ToDOList.addTask({ title: 'Омг' });
 ToDOList.addTask({ title: 'dsf' });
 ToDOList.addTask({ title: 'fdsfsd', priority: 5 });
-ToDOList.deleteTask(1);
-ToDOList.updateNameOrPriority2({ id: 2, title: 'Вау', priority: 15 });
-ToDOList.updateNameOrPriority2({ id: 2, priority: 18 });
-ToDOList.updateNameOrPriority2({ id: 2 });
+ToDOList.updateNameOrPriority({ id: 2, title: 'Вау', priority: 15 });
+ToDOList.updateNameOrPriority({ id: 2, priority: 18 });
+ToDOList.updateNameOrPriority({ id: 2 });
 console.log(ToDOList.sortTasks('asc'));
 console.log(ToDOList.sortTasks('desc'));
 console.log(ToDOList.sortTasks('dfsfds'));
