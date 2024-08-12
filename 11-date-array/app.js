@@ -1,84 +1,39 @@
-const isDayOrMonth = (data) => {
-  const firstNum = parseInt(data[0]);
-  const secondNum = parseInt(data[1]);
-
-  if (
-    isNaN(firstNum) ||
-    isNaN(secondNum) ||
-    firstNum <= 0 ||
-    secondNum <= 0 ||
-    firstNum > 31 ||
-    secondNum > 31
-  ) {
-    return false;
-  }
-
-  if (firstNum <= 12 && secondNum <= 31) {
-    return [secondNum, firstNum, data[2]];
-  }
-
-  if (firstNum > 12 && secondNum <= 12) {
-    return [firstNum, secondNum, data[2]];
-  }
-
-  return false;
-};
-
 const isLeapYear = (year) => {
   return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 };
 
-
 const isValidDate = (day, month, year) => {
   const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  return day <= daysInMonth[month - 1];
+  return day > 0 && day <= daysInMonth[month - 1];
 };
 
-const isYear = (data) => {
-  const year = parseInt(data[2]);
+const stringToArray = (str) => {
+  let day, month, year;
 
-  if (isNaN(year)) {
-    return false;
-  }
-
-  if (year > 99) {
-    return [data[0], data[1], year];
-  } else if (year >= 40) {
-    return [data[0], data[1], 1900 + year];
+  if (str.includes('/')) {
+    [month, day, year] = str.split('/');
+  } else if (str.includes('-')) {
+    [day, month, year] = str.split('-');
+  } else if (str.includes('.')) {
+    [day, month, year] = str.split('.');
   } else {
-    return [data[0], data[1], 2000 + year];
+    return null;
   }
+
+  if (!year || isNaN(day) || isNaN(month) || isNaN(year)) {
+    return null;
+  }
+
+  return [parseInt(day), parseInt(month), parseInt(year)];
 };
 
 const isDate = (string) => {
-  const separators = ['.', '/', '-'];
-  let separator = '';
-
-  for (let sep of separators) {
-    if (string.includes(sep)) {
-      separator = sep;
-      break;
-    }
-  }
-
-  if (!separator) {
+  const dateArray = stringToArray(string);
+  if (!dateArray) {
     return false;
   }
 
-  const data = string.split(separator);
-
-  if (data.length !== 3) {
-    return false;
-  }
-
-  const isValidDayOrMonth = isDayOrMonth(data);
-  const isValidYear = isYear(isValidDayOrMonth || []);
-
-  if (!isValidDayOrMonth || !isValidYear) {
-    return false;
-  }
-
-  const [day, month, year] = isValidYear;
+  const [day, month, year] = dateArray;
 
   if (!isValidDate(day, month, year)) {
     return false;
@@ -98,23 +53,34 @@ const parseDates = (array) => {
     });
 };
 
-const array = [
-  '10-02-2022',
-  '02/10/2022',
-  's02-12-1992s',
-  '11d-12m-1985y',
-  '12-11-2023',
-  '11/12/2023',
-  '02/29/2023',
-  '02/29/2024',
-  '29-02-2024',
-  '29-02-2023',
-  '30-06-2024',
-  '06/30/2024',
-  '31-06-2024',
-  '06/31/2024',
-  '31-07-2024',
-  '07/31/2024',
-];
+const array = ['10-02-2022', '02/10/2022', '29.02.2024', '31-12-1999', '01/01/2000'];
+const arrayRight = ['10-02-2022', '10-02-2022', '29-02-2024', '31-12-1999', '01-01-2000'];
 
-console.log(parseDates(array));
+const array2 = ['32-01-2020', '31/11/2020', '29.02.2023', '00-01-2020', '31-06-2020'];
+const array2Right = [];
+
+const array3 = ['10-02-2022', '02/10/2022', '29.02.2024', '31/12/2022', '12-31-2022'];
+const array3Right = ['10-02-2022', '10-02-2022', '29-02-2024', '31-12-2022'];
+
+const array4 = ['s10-02-2022s', '11d-12m-1985y', '12-11-2023'];
+const array4Right = ['12-11-2023'];
+
+const checkResult = (array, rightArray) => {
+  const parseD = parseDates(array);
+  let isNorm = true;
+  if (parseD.length === 0 && rightArray === 0) {
+    return isNorm;
+  }
+  for (let i in parseD) {
+    if (parseD[i] != rightArray[i]) {
+      console.log(`шото не так с ${parseD[i]} должно быть ${rightArray[i]} индекс ${i}`);
+      isNorm = false;
+    }
+  }
+  return isNorm;
+};
+
+console.log(checkResult(array, arrayRight));
+console.log(checkResult(array2, array2Right));
+console.log(checkResult(array3, array3Right));
+console.log(checkResult(array4, array4Right));
