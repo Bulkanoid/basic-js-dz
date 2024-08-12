@@ -68,7 +68,7 @@ const array4Right = ['12-11-2023'];
 const checkResult = (array, rightArray) => {
   const parseD = parseDates(array);
   let isNorm = true;
-  if (parseD.length === 0 && rightArray === 0) {
+  if (!parseD.length && !rightArray.length) {
     return isNorm;
   }
   for (let i in parseD) {
