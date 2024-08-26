@@ -1,0 +1,87 @@
+:root {
+    --color-bg: rgba(0, 0, 0, 0.04);
+    --hover: 1px 1px 1px 0px rgba(0, 0, 0, 0.35)
+}
+
+body {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.main {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--color-bg);
+}
+
+.calc {
+    max-width: 500px;
+    min-width: 300px;
+    margin: 0 auto;
+    padding: 50px;
+    background-color: white;
+    border-radius: 20px;
+}
+
+.calc__header {
+    margin-bottom: 50px;
+    font-size: 20px;
+    background-color: var(--color-bg);
+    padding: 10px;
+    text-align: end;
+}
+
+.calc__operators {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.operator {
+    background: none;
+    padding: 5px 20px;
+    font-size: 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 50px;
+}
+
+.operator:hover {
+    box-shadow: var(--hover);
+}
+
+.calc__digit {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.calc__digit-element {
+    text-align: center;
+    padding: 10px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--color-bg);
+    cursor: pointer;
+    
+}
+
+.calc__digit-element:hover {
+    border-radius: 5px;
+    box-shadow: inset -1px -1px 1px 0px rgba(0, 0, 0, 0.162)
+}
+
+.calculate {
+    background: none;
+    cursor: pointer;
+    border: none;
+}
+
+.calculate:hover {
+    border-radius: 5px;
+    box-shadow: inset -1px -1px 1px 0px rgba(0, 0, 0, 0.162)
+}
